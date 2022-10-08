@@ -28,6 +28,15 @@ estuary_main:
   # Key-value settings directly passed as environment variables
   settings: {}
 
+estuary_www:
+  # Image settings
+  image:
+    repository: zorlin/estuary-www
+    tag: latest
+    pullPolicy: Always # change to IfNotPresent later in development
+  # Key-value settings directly passed as environment variables
+  settings: {}
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
