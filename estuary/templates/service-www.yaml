@@ -1,16 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "estuary.fullname" . }}-main
+  name: {{ include "estuary.fullname" . }}-www
   labels:
 {{ include "estuary.labels" . | indent 4 }}
 spec:
-  type: {{ .Values.estuary_main.service.type }}
+  type: {{ .Values.estuary_www.service.type }}
   ports:
-    - port: {{ .Values.estuary_main.service.port }}
+    - port: {{ .Values.estuary_www.service.port }}
       targetPort: http
       protocol: TCP
       name: http
   selector:
-    app.kubernetes.io/name: {{ include "estuary.name" . }}-main
+    app.kubernetes.io/name: {{ include "estuary.name" . }}-www
     app.kubernetes.io/instance: {{ .Release.Name }}

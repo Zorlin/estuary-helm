@@ -25,6 +25,10 @@ estuary_main:
       size: 100Gi
     private:
       size: 512Mi
+  # Service settings
+  service:
+    type: ClusterIP
+    port: 3004
   # Key-value settings directly passed as environment variables
   settings: {}
 
@@ -34,6 +38,10 @@ estuary_www:
     repository: zorlin/estuary-www
     tag: latest
     pullPolicy: Always # change to IfNotPresent later in development
+  # Service settings
+  service:
+    type: ClusterIP
+    port: 4444
   # Key-value settings directly passed as environment variables
   settings: {}
 
@@ -60,10 +68,6 @@ securityContext:
   # readOnlyRootFilesystem: true
   # runAsNonRoot: true
   # runAsUser: 1000
-
-service:
-  type: ClusterIP
-  port: 3004
 
 ingress:
   enabled: false
