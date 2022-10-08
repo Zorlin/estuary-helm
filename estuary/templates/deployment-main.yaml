@@ -16,7 +16,7 @@ spec:
         app.kubernetes.io/name: {{ include "estuary.name" . }}-main
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-    {{- with .Values.estuary.imagePullSecrets }}
+    {{- with .Values.estuary_main.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
@@ -31,14 +31,14 @@ spec:
         - name: {{ .Chart.Name }}-main
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.estuary-main.image.repository }}:{{ tpl .Values.estuary-main.image.tag . }}"
-          imagePullPolicy: {{ .Values.estuary-main.image.pullPolicy }}
+          image: "{{ .Values.estuary_main.image.repository }}:{{ tpl .Values.estuary_main.image.tag . }}"
+          imagePullPolicy: {{ .Values.estuary_main.image.pullPolicy }}
           envFrom:
             - secretRef:
                 name: {{ include "estuary.fullname" . }}
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: 3004
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -62,6 +62,3 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      {% comment %} volumes:
-        - name: initdb
-          emptyDir: {} {% endcomment %}

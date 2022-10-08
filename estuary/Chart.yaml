@@ -9,4 +9,4 @@ maintainers:
 name: estuary
 sources:
   - https://github.com/application-research/estuary
-version: main
+version: 0.1.9

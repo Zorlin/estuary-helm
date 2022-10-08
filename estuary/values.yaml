@@ -4,9 +4,17 @@
 
 replicaCount: 1
 
-estuary-main:
+# Global settings
+persistence:
+  # Allow data to be stored permanently. Usually VERY UNSAFE to disable.
+  enabled: true
+  # Override/specify storage class
+  #storageClass: ceph-rbd
+
+estuary_main:
   # Main settings
-  estuary_hostname: estuary-main
+  hostname: estuary-main
+  # Image settings
   image:
     repository: zorlin/estuary-main
     tag: latest
