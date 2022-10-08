@@ -1,0 +1,12 @@
+apiVersion: v1
+appVersion: 0.1.0
+description:
+  A reliable way to upload public data onto Filecoin and pin it to IPFS.
+icon: https://estuary.tech/static/favicon-32x32.png
+maintainers:
+  - email: zorlin@gmail.com
+    name: Benjamin Arntzen
+name: estuary
+sources:
+  - https://github.com/application-research/estuary
+version: main
