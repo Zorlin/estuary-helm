@@ -9,7 +9,7 @@ persistence:
   # Allow data to be stored permanently. Usually VERY UNSAFE to disable.
   enabled: true
   # Override/specify storage class
-  #storageClass: ceph-rbd
+  storageClass: ceph-rbd
 
 estuary_main:
   # Main settings
@@ -19,6 +19,12 @@ estuary_main:
     repository: zorlin/estuary-main
     tag: latest
     pullPolicy: Always # change to IfNotPresent later in development
+  # Storage settings
+  persistence:
+    data:
+      size: 100Gi
+    private:
+      size: 512Mi
   # Key-value settings directly passed as environment variables
   settings: {}
 

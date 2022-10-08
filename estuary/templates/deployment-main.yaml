@@ -33,6 +33,11 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.estuary_main.image.repository }}:{{ tpl .Values.estuary_main.image.tag . }}"
           imagePullPolicy: {{ .Values.estuary_main.image.pullPolicy }}
+          volumeMounts:
+          - name: data
+            mountPath: /usr/src/estuary/data
+          - name: private
+            mountPath: /usr/estuary/private
           envFrom:
             - secretRef:
                 name: {{ include "estuary.fullname" . }}
@@ -42,11 +47,11 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
+              path: /public/miners
               port: http
           readinessProbe:
             httpGet:
-              path: /
+              path: /public/miners
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
@@ -62,3 +67,17 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
+      volumes:
+      {{- if .Values.persistence.enabled }}
+        - name: data
+          persistentVolumeClaim:
+            claimName: estuary-main-data
+        - name: private
+          persistentVolumeClaim:
+            claimName: estuary-main-private
+      {{- else if not .Values.persistence.enabled }}
+        - name: data
+          emptyDir: {}
+        - name: private
+          emptyDir: {}
+      {{- end }}
