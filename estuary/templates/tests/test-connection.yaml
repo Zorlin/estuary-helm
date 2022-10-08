@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args:  ['{{ include "estuary.fullname" . }}:{{ .Values.service.port }}']
+      args:  ['{{ include "estuary.fullname" . }}:{{ .Values.estuary_main.service.port }}']
   restartPolicy: Never
