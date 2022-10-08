@@ -6,10 +6,10 @@ replicaCount: 1
 
 # Global settings
 persistence:
-  # Allow data to be stored permanently. Usually VERY UNSAFE to disable.
+  # Allow data to be stored permanently. Usually VERY UNSAFE to disable, and auth won't work without it anyways.
   enabled: true
   # Override/specify storage class
-  storageClass: ceph-rbd
+  storageClass: cephfs
 
 estuary_main:
   # Main settings

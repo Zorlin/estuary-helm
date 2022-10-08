@@ -19,7 +19,7 @@ metadata:
     name: estuary-main-private
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: {{ .Values.estuary_main.persistence.private.size }}
