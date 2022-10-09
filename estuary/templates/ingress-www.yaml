@@ -1,5 +1,5 @@
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "estuary.fullname" . -}}-main
+{{- $fullName := include "estuary.fullname" . -}}
 {{- $svcPort := .Values.estuary_www.service.port -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
