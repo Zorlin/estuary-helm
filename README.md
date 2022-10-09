@@ -6,7 +6,7 @@ Helm charts for running Estuary on Kubernetes.
 
 ```console
 $ cd estuary-helm
-$ helm install estuary estuary/
+$ helm install estuary estuary/ -n estuary --create-namespace
 ```
 
 ### Dependencies
