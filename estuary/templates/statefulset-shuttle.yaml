@@ -1,22 +1,22 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: {{ include "estuary.fullname" . }}-main
+  name: {{ include "estuary.fullname" . }}-shuttle
   labels:
 {{ include "estuary.labels" . | indent 4 }}
 spec:
-  replicas: 1
+  serviceName: {{ include "estuary.fullname" . }}-shuttle
+  podManagementPolicy: "Parallel"
+  replicas: {{ .Values.estuary_shuttle.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "estuary.name" . }}-main
-      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "estuary.name" . }}-shuttle
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ include "estuary.name" . }}-main
-        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ include "estuary.name" . }}-shuttle
     spec:
-    {{- with .Values.estuary_main.imagePullSecrets }}
+    {{- with .Values.estuary_shuttle.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
@@ -28,11 +28,11 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}-main
+        - name: {{ .Chart.Name }}-shuttle
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.estuary_main.image.repository }}:{{ tpl .Values.estuary_main.image.tag . }}"
-          imagePullPolicy: {{ .Values.estuary_main.image.pullPolicy }}
+          image: "{{ .Values.estuary_shuttle.image.repository }}:{{ tpl .Values.estuary_shuttle.image.tag . }}"
+          imagePullPolicy: {{ .Values.estuary_shuttle.image.pullPolicy }}
           volumeMounts:
           - name: data
             mountPath: /usr/src/estuary/data
@@ -43,16 +43,8 @@ spec:
                 name: {{ include "estuary.fullname" . }}
           ports:
             - name: http
-              containerPort: 3004
+              containerPort: 3005
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /public/miners
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /public/miners
-              port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
@@ -68,10 +60,10 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       volumes:
-      {{- if .Values.persistence.enabled }}
+      {{- if and .Values.persistence.enabled .Values.estuary_shuttle.persistence.existingClaim }}
         - name: data
           persistentVolumeClaim:
-            claimName: estuary-main-data
+            claimName: {{ tpl .Values.estuary_shuttle.persistence.existingClaim $ }}
         - name: private
           persistentVolumeClaim:
             claimName: estuary-main-private
@@ -81,4 +73,20 @@ spec:
         - name: private
           persistentVolumeClaim:
             claimName: estuary-main-private
+      {{- else }}
+        - name: private
+          persistentVolumeClaim:
+            claimName: estuary-main-private
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ .Values.estuary_shuttle.persistence.data.size | quote }}
+      {{- if .Values.persistence.storageClass }}
+        storageClassName: {{ .Values.persistence.storageClass }}
+      {{- end }}
       {{- end }}

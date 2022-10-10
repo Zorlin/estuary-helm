@@ -1,23 +1,23 @@
-{{- if .Values.estuary_www.ingress.enabled -}}
+{{- if .Values.estuary_main.ingress.enabled -}}
 {{- $fullName := include "estuary.fullname" . -}}
-{{- $svcPort := .Values.estuary_www.service.port -}}
+{{- $svcPort := .Values.estuary_main.service.port -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ $fullName }}
+  name: {{ $fullName }}-api
   labels:
 {{ include "estuary.labels" . | indent 4 }}
-  {{- with .Values.estuary_www.ingress.annotations }}
+  {{- with .Values.estuary_main.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-{{- if .Values.estuary_www.ingress.className }}
-  ingressClassName: {{ .Values.estuary_www.ingress.className }}
+{{- if .Values.estuary_main.ingress.className }}
+  ingressClassName: {{ .Values.estuary_main.ingress.className }}
 {{- end }}
-{{- if .Values.estuary_www.ingress.tls }}
+{{- if .Values.estuary_main.ingress.tls }}
   tls:
-  {{- range .Values.estuary_www.ingress.tls }}
+  {{- range .Values.estuary_main.ingress.tls }}
     - hosts:
       {{- range .hosts }}
         - {{ . | quote }}
@@ -26,7 +26,7 @@ spec:
   {{- end }}
 {{- end }}
   rules:
-  {{- range .Values.estuary_www.ingress.hosts }}
+  {{- range .Values.estuary_main.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
         paths:
@@ -34,7 +34,7 @@ spec:
           - path: {{ . }}
             backend:
               service:
-                name: {{ $fullName }}-www
+                name: {{ $fullName }}-main
                 port:
                   number: {{ $svcPort }}
             pathType: Prefix

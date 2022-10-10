@@ -5,7 +5,7 @@ metadata:
   labels:
 {{ include "estuary.labels" . | indent 4 }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.estuary_www.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "estuary.name" . }}-www
@@ -67,11 +67,7 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       volumes:
-      {{- if .Values.persistence.enabled }}
         - name: private
           persistentVolumeClaim:
             claimName: estuary-main-private
-      {{- else if not .Values.persistence.enabled }}
-        - name: private
-          emptyDir: {}
-      {{- end }}
+            readOnly: true
